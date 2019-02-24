@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="cart.css">
+	</head>
+	<body>
+		<div class="g-panel">
+			<!-- 所有商品信息 -->
+			<div class="device" id="page-list">
+				<!-- 头部 -->
+				<header><span class="header-title">商品信息</span></header>
+				<div class="page">
+					<div class="cate-wrap">
+						<ul class="cate-tab">
+							<li class="cate" v-bind:class="{'tab-active':cate_index===index}" v-for="(item,index) in cate" @click="toggleCate(index)">{{item.des}}</li>
+						</ul>
+					</div>
+					<ul class="filter-bar">
+						<li class="filter-opt" v-bind:class="{'filter-active':filter_index===index,'filter-price':item.method==='sortPrice','price-down':price_isAsc,'price-up':!price_isAsc}"
+						 v-for="(item,index) in sortMethods" @click="sortBy(item.method)">{{item.name}}</li>
+					</ul>
+
+					<ul class="goods-list">
+						<li class="goods-item" v-for="(item ,index) in list">
+							<div class="goods-img">
+								<img v-bind:src="item.img" v-bind:alt="item.name" />
+							</div>
+							<div class="goods-info">
+								<p class="goods-title">{{item.name}}</p>
+								<div class="goods-price">
+									<span>￥<b>{{item.price}}</b></span>
+								</div>
+								<span class="goods-des"></span>
+								<span class="addToCart" @click="addToCart(item)">+</span>
+							</div>
+						</li>
+					</ul>
+				</div>
+
+			</div>
+
+			<!-- 已经加入的商品信息 -->
+			<div class="device" id="page-cart">
+				<header>
+					<span class="header-title">购物清单</span>
+					<span class="header-edit" @click="toggleDelBtn">
+						<span v-show="!delFlag">编辑</span>
+						<span v-show="delFlag">完成</span>
+					</span>
+				</header>
+				<div class="page">
+					<div class="empty-states" v-if="cart.length===0">
+						<span>购物车里空空如也，赶紧去逛逛吧！</span>
+					</div>
+					<ul class="goods-list cart-list" v-else>
+						<li class="goods-item" v-for="(item,index) in cart">
+							<div class="item-selector">
+								<div class="icon-selector" v-bind:class="{'selector-active': item.checked}" @click="selectGoods(item)">
+									<svg t="1504061791962" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+									 p-id="2922" xmlns:xlink="http://www.w3.org/1999/xlink" width="12" height="12">
+										<path d="M908.288 127.488l-537.6 537.6-254.976-254.976L0 525.824l254.976 254.976 115.712 115.712L486.4 780.8l537.6-537.6z"
+										 fill="#ffffff" p-id="2923"></path>
+									</svg>
+								</div>
+							</div>
+							<div class="goods-img">
+								<img v-bind:src="item.img" v-bind:alt="item.name">
+							</div>
+							<div class="goods-info">
+								<p class="goods-title">{{item.name}}</p>
+								<div class="goods-price">
+									<span>￥<b>{{item.price}}</b></span>
+								</div>
+								<span class="goods-des">库存{{item.stock}}件</span>
+								<div class="goods-num">
+									<div class="num-btn"  @click="changeQty(true,item)">+</div>
+									<div class="show-num">{{item.quantity}}</div>
+									<div class="num-btn"  @click="changeQty(false,item)">-</div>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<div class="action-bar" v-bind:class="{ 'del-box': delFlag }">
+					<!-- 选择按钮 -->
+					<div class="g-selector" @click="checkAll">
+						<div class="item-selector">
+							<div class="icon-selector" v-bind:class="{'selector-active': checkAllFlag}">
+								<!-- 绘制出选择的符号 -->
+								<svg t="1504061791962" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+								 p-id="2922" xmlns:xlink="http://www.w3.org/1999/xlink" width="12" height="12">
+									<path d="M908.288 127.488l-537.6 537.6-254.976-254.976L0 525.824l254.976 254.976 115.712 115.712L486.4 780.8l537.6-537.6z"
+									 fill="#ffffff" p-id="2923"></path>
+								</svg>
+							</div>
+						</div>
+						<span>全选</span>
+					</div>
+					<div class="action-btn buy-btn" >去结算({{ selectedNum }})</div>
+					<div class="action-btn del-btn" @click="delGoods">删除({{ selectedNum }})</div>
+					<div class="total">合计<span>￥<b>{{ totalPrice }}</b></span></div>
+				</div>
+			</div>
+		</div>
+
+		<script src="vue.min.js"></script>
+		<script src="cart.js"></script>
+	</body>
+</html>
+
+
+
+
